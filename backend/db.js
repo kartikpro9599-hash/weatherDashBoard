@@ -9,6 +9,8 @@ const db = async () => {
       throw new Error("MONGO_URI is not fpund");
     }
     await mongoose.connect(MONGO_URI);
+    console.log("db connected");
+    
   } catch (error) {
     console.log("error come from db connection :", error);
   }
