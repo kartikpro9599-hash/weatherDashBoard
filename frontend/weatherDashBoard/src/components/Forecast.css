@@ -1,0 +1,418 @@
+/* ─── Container ─── */
+.forecast-compact {
+  animation: fadeIn 0.6s ease both;
+  animation-delay: 0.3s;
+}
+
+.forecast-compact__title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.01em;
+}
+
+.forecast-compact__card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-lg) var(--space-md);
+  overflow: hidden;
+}
+
+.forecast-compact__divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: var(--space-md) 0;
+}
+
+/* ─── Temperature chart ─── */
+.forecast-chart {
+  width: 100%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+/* Cross-fade out when switching days */
+.forecast-chart--fading {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.forecast-chart__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 800 / 160;
+}
+
+.forecast-chart__label {
+  fill: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-family);
+  transition: fill 0.15s ease;
+  pointer-events: none;
+}
+
+.forecast-chart__label--active {
+  fill: #f59e0b;
+}
+
+/* ─── Interactive chart points ─── */
+.forecast-chart__point {
+  cursor: pointer;
+  outline: none;
+}
+
+.forecast-chart__point:focus-visible .forecast-chart__dot {
+  r: 6;
+  fill: #fff;
+  stroke: #f59e0b;
+  stroke-width: 2.5;
+}
+
+.forecast-chart__dot {
+  transition: r 0.15s ease, fill 0.15s ease;
+}
+
+.forecast-chart__point:hover .forecast-chart__dot {
+  r: 5.5;
+}
+
+/* Time labels row */
+.forecast-chart__times {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 40px 0;
+}
+
+.forecast-chart__time {
+  font-size: var(--font-xs);
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 2px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.forecast-chart__time:hover {
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.forecast-chart__time--active {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* ─── Hourly detail panel ─── */
+.forecast-detail {
+  margin-top: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  animation: detailSlideIn 0.2s ease both;
+}
+
+/* Close animation */
+.forecast-detail--closing {
+  animation: detailSlideOut 180ms ease both;
+}
+
+@keyframes detailSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes detailSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.forecast-detail__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.forecast-detail__time-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.forecast-detail__icon img {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 1px 4px rgba(245, 158, 11, 0.2));
+}
+
+.forecast-detail__emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.forecast-detail__time {
+  display: block;
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.forecast-detail__condition {
+  display: block;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.forecast-detail__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  color: var(--text-tertiary);
+  font-size: var(--font-sm);
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.forecast-detail__close:hover {
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.forecast-detail__close:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.forecast-detail__temp-main {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.02em;
+}
+
+.forecast-detail__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px var(--space-xl);
+}
+
+.forecast-detail__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.forecast-detail__row-label {
+  font-size: var(--font-xs);
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.forecast-detail__row-value {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ─── Daily forecast row ─── */
+.forecast-daily {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.forecast-daily::-webkit-scrollbar {
+  height: 0;
+  display: none;
+}
+
+.forecast-daily__item {
+  flex: 1 0 0;
+  min-width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-sm) var(--space-xs);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: inherit;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.forecast-daily__item:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.forecast-daily__item:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Active / selected day highlight */
+.forecast-daily__item--active {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.18);
+}
+
+.forecast-daily__item--active:hover {
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.forecast-daily__item--active .forecast-daily__day {
+  color: var(--accent-blue);
+}
+
+.forecast-daily__day {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.forecast-daily__icon img {
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 1px 4px rgba(245, 158, 11, 0.2));
+}
+
+.forecast-daily__emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.forecast-daily__temps {
+  display: flex;
+  gap: 6px;
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.forecast-daily__high {
+  color: var(--text-primary);
+}
+
+.forecast-daily__low {
+  color: var(--text-tertiary);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .forecast-compact__card {
+    padding: var(--space-md) var(--space-sm) var(--space-sm);
+  }
+
+  .forecast-chart__times {
+    padding: 4px 20px 0;
+  }
+
+  .forecast-chart__time {
+    font-size: 0.65rem;
+  }
+
+  .forecast-daily__item {
+    min-width: 60px;
+    padding: 6px 2px;
+  }
+
+  .forecast-daily__day {
+    font-size: var(--font-xs);
+  }
+
+  .forecast-daily__icon img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .forecast-daily__temps {
+    font-size: var(--font-xs);
+    gap: 4px;
+  }
+
+  /* Detail panel: single-column grid on mobile */
+  .forecast-detail {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .forecast-detail__grid {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .forecast-detail__temp-main {
+    font-size: 1.5rem;
+  }
+
+  .forecast-detail__icon img {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 380px) {
+  .forecast-daily {
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  .forecast-daily__item {
+    flex: 0 0 auto;
+  }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .forecast-compact,
+  .forecast-detail {
+    animation: none !important;
+  }
+
+  .forecast-chart {
+    transition: none !important;
+  }
+
+  .forecast-chart__dot {
+    transition: none !important;
+  }
+
+  .forecast-detail--closing {
+    animation: none !important;
+    opacity: 0;
+  }
+}
