@@ -1,0 +1,160 @@
+/* ─── Overlay ─── */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: var(--space-md);
+}
+
+/* Open state */
+.confirm-overlay.confirm--open {
+  animation: confirmFadeIn 0.2s ease both;
+}
+
+/* Close state */
+.confirm-overlay.confirm--closing {
+  animation: confirmFadeOut 0.2s ease both;
+}
+
+/* ─── Modal card ─── */
+.confirm-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+/* Open state */
+.confirm-modal.confirm--open {
+  animation: confirmSlideUp 0.25s ease both;
+}
+
+/* Close state */
+.confirm-modal.confirm--closing {
+  animation: confirmSlideDown 0.2s ease both;
+}
+
+.confirm-modal__title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.confirm-modal__message {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-xl);
+}
+
+/* ─── Actions ─── */
+.confirm-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+.confirm-modal__btn {
+  padding: 8px 20px;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.confirm-modal__btn:active {
+  transform: scale(0.96);
+}
+
+.confirm-modal__btn--cancel {
+  color: var(--text-secondary);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+}
+
+.confirm-modal__btn--cancel:hover {
+  background: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.confirm-modal__btn--cancel:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.confirm-modal__btn--delete {
+  color: #fff;
+  background: var(--accent-rose);
+  border: 1px solid transparent;
+}
+
+.confirm-modal__btn--delete:hover {
+  background: #e11d48;
+}
+
+.confirm-modal__btn--delete:focus-visible {
+  outline: 2px solid var(--accent-rose);
+  outline-offset: 2px;
+}
+
+/* ─── Open animations ─── */
+@keyframes confirmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirmSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── Close animations ─── */
+@keyframes confirmFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes confirmSlideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+  .confirm-modal {
+    padding: var(--space-lg) var(--space-lg) var(--space-md);
+  }
+
+  .confirm-modal__actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirm-modal__btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+}
