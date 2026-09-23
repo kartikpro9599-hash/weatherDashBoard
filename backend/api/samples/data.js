@@ -1,4 +1,4 @@
-export const exampleData = [
+export const exampleData = 
   {
     coord: {
       lon: 77.2167,
@@ -43,5 +43,4 @@ export const exampleData = [
     id: 1273294,
     name: "Delhi",
     cod: 200,
-  },
-];
+  }

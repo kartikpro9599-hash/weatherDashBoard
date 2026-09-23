@@ -1,17 +1,12 @@
 import { Router } from "express";
 import Weather from "../model/weatherSchema.js";
+import session from "../controller/session.controller.js";
 
 const historyRoute = Router();
 
-historyRoute.get("/history", async (req, res) => {
+historyRoute.get("/history", session, async (req, res) => {
   try {
-    const { sessionId } = req.cookies;
-    if (!sessionId) {
-      return res.status(404).json({
-        success: false,
-        message: "session id not found",
-      });
-    }
+    const { sessionId } = req;
     const history = await Weather.find(
       { sessionId },
       {
@@ -24,7 +19,7 @@ historyRoute.get("/history", async (req, res) => {
     console.log(history);
     if (history.length === 0) {
       return res.status(404).json({
-        success: true,
+        success: false,
         message: "No search history found",
       });
     }
@@ -38,7 +33,7 @@ historyRoute.get("/history", async (req, res) => {
     console.log("error from history route", error);
     return res.status(500).json({
       success: false,
-      message: "internal error could not ffind data",
+      message: "internal error could not find data",
     });
   }
 });

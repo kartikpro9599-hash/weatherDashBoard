@@ -12,12 +12,12 @@ DefaultWeatherRoute.get("/default", async (req, res) => {
     (lat !== null && lat !== undefined) ||
     (lon !== null && lon !== undefined)
   ) {
-    const { error } = locationValidateSchema.safeParse({
+    const { error: parseError } = locationValidateSchema.safeParse({
       lat: lat,
       lon: lon,
     });
 
-    if (error) {
+    if (parseError) {
       return res.status(400).json({
         success: false,
         message: "invalid location",
@@ -25,7 +25,24 @@ DefaultWeatherRoute.get("/default", async (req, res) => {
     }
   }
   try {
-    const data = await fetchData(lat, lon);
+    const [currentResult, forecastResult] = await Promise.allSettled([
+      fetchCurrentWeather(lat, lon),
+      fetchForecast(lat, lon),
+    ]);
+
+    const currentWeather =
+      currentResult.status === "fulfilled" ? currentResult.value : null;
+    const forecastWeather =
+      forecastResult.status === "fulfilled" ? forecastResult.value : null;
+
+    if (!currentWeather) {
+      return res.status(503).json({
+        success: false,
+        message: "failed to fetched real weather data",
+        weatherData: exampleData,
+        forecastData: forecastWeather,
+      });
+    }
 
     if (!req.cookies.sessionId) {
       const id = randomUUID();
@@ -39,34 +56,39 @@ DefaultWeatherRoute.get("/default", async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "successfully fetched weather data",
-      weatherData: data,
+      weatherData: currentWeather,
+      forecastData: forecastWeather,
     });
   } catch (error) {
     return res.status(503).json({
       success: false,
       message: "failed to fetched real weather data",
       weatherData: exampleData,
+      forecastData: null,
     });
   }
 });
 
-async function fetchData(lattitud, longitude) {
-  let url;
+function buildQueryParams(lat, lon) {
   const { WEATHER_API } = process.env;
-
-  if (!lattitud || !longitude) {
-    url = `https://api.openweathermap.org/data/2.5/weather?q=Delhi&appid=${WEATHER_API}&units=metric`;
-  } else {
-    url = `https://api.openweathermap.org/data/2.5/weather?lat=${lattitud}&lon=${longitude}&appid=${WEATHER_API}&units=metric`;
+  if (!lat || !lon) {
+    return `q=Delhi&appid=${WEATHER_API}&units=metric`;
   }
+  return `lat=${lat}&lon=${lon}&appid=${WEATHER_API}&units=metric`;
+}
 
-  try {
-    let response = await axios.get(url);
-    return response.data;
-  } catch (error) {
-    console.log("error comes from defaulRoute : ", error);
-    throw error;
-  }
+async function fetchCurrentWeather(lat, lon) {
+  const params = buildQueryParams(lat, lon);
+  const url = `https://api.openweathermap.org/data/2.5/weather?${params}`;
+  const response = await axios.get(url);
+  return response.data;
+}
+
+async function fetchForecast(lat, lon) {
+  const params = buildQueryParams(lat, lon);
+  const url = `https://api.openweathermap.org/data/2.5/forecast?${params}`;
+  const response = await axios.get(url);
+  return response.data;
 }
 
 export default DefaultWeatherRoute;

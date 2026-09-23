@@ -2,46 +2,54 @@ import { Router } from "express";
 import axios from "axios";
 import { cityValidationSchema } from "../controller/validation.js";
 import Weather from "../model/weatherSchema.js";
+import session from "../controller/session.controller.js";
+
 const specificWeatherRoute = Router();
 
-specificWeatherRoute.get("/specific", async (req, res) => {
+specificWeatherRoute.get("/specific", session, async (req, res) => {
   try {
-    const { data: city, error } = cityValidationSchema.safeParse(
+    const { data: city, error: parseError } = cityValidationSchema.safeParse(
       req.query.city,
     );
 
-    if (error) {
+    if (parseError) {
       return res.status(400).json({
         success: false,
-        message: error.issues[0].message,
+        message: parseError.issues[0].message,
       });
     }
 
-    const { sessionId } = req.cookies;
-    if (!sessionId) {
-      return res.status(401).json({
-        success: false,
-        message: "please allow cookie for this site",
-      });
-    }
-
+    const { sessionId } = req;
     const { WEATHER_API } = process.env;
+    const encodedCity = encodeURIComponent(city);
 
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${WEATHER_API}&units=metric`;
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${WEATHER_API}&units=metric`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodedCity}&appid=${WEATHER_API}&units=metric`;
 
-    const response = await axios.get(url);
+    const [weatherResult, forecastResult] = await Promise.allSettled([
+      axios.get(weatherUrl),
+      axios.get(forecastUrl),
+    ]);
+
+    if (weatherResult.status === "rejected") {
+      throw weatherResult.reason;
+    }
+
+    const currentWeather = weatherResult.value.data;
+    const forecastWeather =
+      forecastResult.status === "fulfilled" ? forecastResult.value.data : null;
 
     try {
       await Weather.findOneAndUpdate(
         {
           sessionId,
-          city: response.data.name,
+          city: currentWeather.name,
         },
         {
           $set: {
-            country: response.data.sys.country,
+            country: currentWeather.sys.country,
             searchedAt: new Date(),
-            data: response.data,
+            data: currentWeather,
           },
         },
         {
@@ -56,10 +64,11 @@ specificWeatherRoute.get("/specific", async (req, res) => {
     res.status(200).json({
       success: true,
       message: "successfully fetched data",
-      weatherData: response.data,
+      weatherData: currentWeather,
+      forecastData: forecastWeather,
     });
   } catch (error) {
-    console.log("error from specificWeatherRoute : ", error);
+    console.log("error from specificWeatherRoute : ", error.response?.data);
 
     if (error.response?.status === 404) {
       return res.status(404).json({
