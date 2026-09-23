@@ -39,7 +39,7 @@ sequenceDiagram
     User->>App: GET /api/default?lat=...&lon=...
     App->>App: Check for existing sessionId cookie
     alt Cookie Missing
-      ->>User: Set-Cookie: sessionId=<UUID>; httpOnly; max-Age=30d
+        Note right of User: New session cookie created
     end
     App->>External: Fetch weather by coords (or default 'Delhi')
     External-->>App: Return weather data
