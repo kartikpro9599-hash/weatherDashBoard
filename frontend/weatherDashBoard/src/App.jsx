@@ -71,7 +71,7 @@ export default function App() {
 
       <footer className="app__footer">
         <p className="app__footer-text">
-          Powered by OpenWeatherMap
+          Made with Love ❤️
         </p>
       </footer>
     </div>
