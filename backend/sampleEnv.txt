@@ -1,0 +1,19 @@
+this is env sample file where all variable names would be aappear
+after this u can make '.env' file and make those those variable name
+exact same that i mentioned for inital setup
+
+/***********************************************************************************************************************************************************************************************************************************************************************************************/
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+PORT= enter your port no. ex 3000
+WEATHER_API= enter your WEATHER_API
+MONGO_URI= enter your MONGO_URI
+
+// for WEATHER_API 
+this link provide u a api after login
+https://home.openweathermap.org/
+
+// for WEATHER_API 
+this link provide u a MONGO_URI after setup
+https://cloud.mongodb.com/
