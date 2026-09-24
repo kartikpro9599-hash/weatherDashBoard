@@ -9,6 +9,7 @@ exact same that i mentioned for inital setup
 PORT= enter your port no. ex 3000
 WEATHER_API= enter your WEATHER_API
 MONGO_URI= enter your MONGO_URI
+FRONTEND_URL= enter your FRONTEND_URL
 
 // for WEATHER_API 
 this link provide u a api after login
